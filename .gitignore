@@ -1,0 +1,12 @@
+# OS / editor cruft
+.DS_Store
+Thumbs.db
+*.swp
+.idea/
+.vscode/
+
+# Node (front-end is dependency-free; this is just a safety net)
+node_modules/
+
+# Local front-end secrets, if you ever copy config for local-only use
+web/config.local.js

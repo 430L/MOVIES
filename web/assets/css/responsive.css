@@ -1,0 +1,68 @@
+/* ============================================================================
+ *  VELVET CINEMA — responsive & mobile (mobile-first tweaks layered on top)
+ * ==========================================================================*/
+
+/* ---- Tablet / small laptop ---- */
+@media (max-width: 900px) {
+  .detail__body { grid-template-columns: 150px 1fr; gap: 18px; margin-top: -90px; }
+  .detail__poster { width: 150px; }
+  .grid { grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 12px; }
+}
+
+/* ---- Phones ---- */
+@media (max-width: 640px) {
+  body { font-size: 17px; }
+
+  /* header collapses: brand + search on row 1, search wraps full width */
+  .header-inner { flex-wrap: wrap; gap: 10px 12px; padding: 8px 12px 12px; }
+  .brand { order: 1; }
+  .header-actions { order: 2; margin-left: auto; }
+  .search { order: 3; flex-basis: 100%; max-width: none; }
+  .fx-toggle__label { display: none; }         /* icon-only toggle on phones */
+  .fx-toggle { padding: 9px 11px; }
+
+  .view { padding: 16px 12px 30px; }
+
+  .grid { grid-template-columns: repeat(auto-fill, minmax(104px, 1fr)); gap: 10px; }
+  .rail { grid-auto-columns: 128px; }
+
+  .hero { min-height: 260px; }
+  .hero__body { padding: 18px; }
+
+  /* detail: poster centers above the text */
+  .detail__body { grid-template-columns: 1fr; justify-items: center; text-align: center;
+    margin-top: -70px; gap: 14px; }
+  .detail__poster { width: 128px; }
+  .detail__facts, .detail__genres, .detail__actions { justify-content: center; }
+  .detail__overview { text-align: left; }
+
+  .episodes { grid-template-columns: 1fr; }
+
+  /* theater: title can take more room, controls stay reachable */
+  .theater__title { max-width: 100%; flex-basis: 100%; margin-bottom: 4px; text-align: center; }
+  .tsel { max-width: 42vw; }
+}
+
+/* ---- Very small ---- */
+@media (max-width: 380px) {
+  .grid { grid-template-columns: repeat(auto-fill, minmax(92px, 1fr)); }
+  .brand__name { font-size: 22px; }
+}
+
+/* ---- Coarse pointers: bigger touch targets ---- */
+@media (pointer: coarse) {
+  .tctl, .tsel, .btn { min-height: 44px; }
+  .poster:hover { transform: none; }   /* no hover lift where hover is emulated */
+}
+
+/* ---- Landscape phone in theater: maximize the screen ---- */
+@media (max-height: 500px) and (orientation: landscape) {
+  .theater__bar { padding-block: 8px; }
+  .curtain-marquee { top: 6%; }
+}
+
+/* ---- Wide desktops ---- */
+@media (min-width: 1400px) {
+  :root { --maxw: 1320px; }
+  .grid { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); }
+}

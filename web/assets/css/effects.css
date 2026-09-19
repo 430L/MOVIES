@@ -1,0 +1,253 @@
+/* ============================================================================
+ *  VELVET CINEMA — the theater & cinema special effects
+ *  All motion is transform/opacity only (GPU friendly). The [data-effects]
+ *  attribute on <body> scales everything down: full -> lite -> off.
+ * ==========================================================================*/
+
+/* ===================== THEATER SHELL ===================== */
+.theater {
+  position: fixed; inset: 0; z-index: 120;
+  display: grid; grid-template-rows: 1fr auto;
+  background:
+    radial-gradient(120% 90% at 50% 0%, #2a0708 0%, #120303 55%, #050101 100%);
+  overflow: hidden;
+}
+.theater__stage {
+  position: relative; display: grid; place-items: center;
+  padding: clamp(10px, 3vw, 40px); min-height: 0;
+}
+/* faint auditorium side walls + floor for depth */
+.theater__stage::before {
+  content: ""; position: absolute; inset: 0; pointer-events: none;
+  background:
+    linear-gradient(90deg, rgba(0,0,0,.7), transparent 18%, transparent 82%, rgba(0,0,0,.7)),
+    radial-gradient(80% 55% at 50% 118%, rgba(90,20,20,.35), transparent 60%);
+}
+/* silhouetted seat-heads along the bottom */
+.theater__seats {
+  position: absolute; left: 0; right: 0; bottom: 0; height: 60px; pointer-events: none;
+  background:
+    radial-gradient(22px 26px at 26px 40px, #000 60%, transparent 62%) 0 0/64px 100% repeat-x;
+  opacity: .85; filter: blur(.4px); z-index: 4;
+}
+
+/* ===================== SCREEN + FRAME ===================== */
+.screen-frame {
+  position: relative; width: min(100%, 1100px);
+  padding: clamp(8px, 1.2vw, 16px);
+  border-radius: 12px;
+  background:
+    linear-gradient(145deg, var(--gold-400), var(--gold-600) 45%, var(--gold-shadow));
+  box-shadow:
+    0 0 0 2px rgba(0,0,0,.5),
+    0 30px 70px rgba(0,0,0,.75),
+    0 0 90px rgba(120,20,20,.35);
+}
+.screen {
+  position: relative; overflow: hidden; border-radius: 6px;
+  aspect-ratio: 16/9; background: #000;
+  box-shadow: inset 0 0 0 2px rgba(0,0,0,.9), inset 0 0 60px rgba(0,0,0,.9);
+}
+.screen__video { width: 100%; height: 100%; display: block; background: #000; }
+
+/* ---- overlay layers (stacked over the video) ---- */
+.fx { position: absolute; inset: 0; pointer-events: none; }
+
+/* vignette — static, cheap */
+.fx-vignette {
+  z-index: 6;
+  box-shadow: inset 0 0 120px 30px rgba(0,0,0,.8), inset 0 0 40px rgba(0,0,0,.6);
+  background: radial-gradient(120% 120% at 50% 50%, transparent 55%, rgba(0,0,0,.55) 100%);
+}
+/* film grain — tiled SVG noise, nudged around for a "gate weave" */
+.fx-grain {
+  z-index: 7; opacity: .16; mix-blend-mode: overlay;
+  background-image: var(--grain-url);
+  background-size: 180px 180px;
+  animation: grain 0.6s steps(4) infinite;
+}
+@keyframes grain {
+  0%   { transform: translate(0,0); }
+  25%  { transform: translate(-3%, 2%); }
+  50%  { transform: translate(2%, -3%); }
+  75%  { transform: translate(-2%, -2%); }
+  100% { transform: translate(3%, 2%); }
+}
+/* projector flicker — gentle brightness pulse */
+.fx-flicker {
+  z-index: 8; background: #fff5e6; opacity: 0;
+  animation: flicker 5s ease-in-out infinite;
+}
+@keyframes flicker {
+  0%,100% { opacity: 0; }
+  47% { opacity: 0; }
+  48% { opacity: .05; }
+  49% { opacity: 0; }
+  72% { opacity: .04; }
+  73% { opacity: 0; }
+}
+/* occasional dust hair / scratch line drifting across */
+.fx-dust {
+  z-index: 8; overflow: hidden;
+}
+.fx-dust::before {
+  content: ""; position: absolute; top: -10%; left: 30%;
+  width: 1px; height: 120%;
+  background: linear-gradient(rgba(255,255,255,.5), transparent);
+  opacity: .35; animation: dust 7s linear infinite;
+}
+@keyframes dust {
+  0% { transform: translateX(0) scaleY(.6); opacity: 0; }
+  8% { opacity: .4; }
+  20% { transform: translateX(6vw) scaleY(1); opacity: 0; }
+  100% { transform: translateX(6vw); opacity: 0; }
+}
+/* subtle warm cinema glow when idle */
+.screen--idle { background:
+  radial-gradient(60% 60% at 50% 40%, #2b0c0c 0%, #0a0202 70%), #000; }
+
+/* ===================== CURTAINS ===================== */
+.curtains { position: absolute; inset: 0; z-index: 10; pointer-events: none; }
+.curtain {
+  position: absolute; top: 0; bottom: 0; width: 52%;
+  background:
+    repeating-linear-gradient(90deg,
+      #4d0d10 0px, #6e1216 14px, #8a1519 26px, #4d0d10 40px, #360a0a 54px);
+  box-shadow: inset -30px 0 60px rgba(0,0,0,.6), inset 30px 0 60px rgba(0,0,0,.5);
+  transition: transform 1.5s cubic-bezier(.7,0,.2,1);
+  will-change: transform;
+}
+.curtain::after { /* velvet sheen */
+  content: ""; position: absolute; inset: 0;
+  background: linear-gradient(90deg, transparent, rgba(255,220,180,.06) 40%, transparent 60%);
+}
+.curtain::before { /* scalloped valance-like bottom hem */
+  content: ""; position: absolute; left: 0; right: 0; bottom: -1px; height: 34px;
+  background: inherit;
+  -webkit-mask: radial-gradient(20px 34px at 20px 100%, #000 0 18px, transparent 19px) repeat-x 0 0/40px 100%;
+          mask: radial-gradient(20px 34px at 20px 100%, #000 0 18px, transparent 19px) repeat-x 0 0/40px 100%;
+}
+.curtain--left  { left: 0;  border-right: 3px solid var(--gold-600); }
+.curtain--right { right: 0; border-left: 3px solid var(--gold-600); }
+/* open state — slide the panels off to the sides */
+.theater.is-open .curtain--left  { transform: translateX(-102%); }
+.theater.is-open .curtain--right { transform: translateX(102%); }
+
+/* marquee title shown on the closed curtain */
+.curtain-marquee {
+  position: absolute; z-index: 11; top: 12%; left: 50%; transform: translateX(-50%);
+  text-align: center; width: min(88%, 640px);
+  transition: opacity .5s ease;
+}
+.curtain-marquee__lamp {
+  font-family: var(--ff-marquee); font-weight: 700; letter-spacing: .32em;
+  font-size: 12px; color: var(--gold-400);
+}
+.curtain-marquee__title {
+  font-family: var(--ff-display); color: var(--cream);
+  font-size: clamp(24px, 4.6vw, 46px); line-height: 1.05;
+  text-shadow: 0 0 22px rgba(230,199,102,.5), 0 3px 0 var(--gold-shadow);
+  margin: 8px 0;
+}
+.curtain-marquee__frame {
+  display: inline-block; padding: 14px 26px; border-radius: 10px;
+  border: 2px solid var(--gold-500);
+  background: rgba(10,2,2,.5);
+  box-shadow: 0 0 40px rgba(0,0,0,.6),
+    0 0 0 8px rgba(0,0,0,.25),
+    0 0 0 10px rgba(212,175,55,.25);
+}
+.theater.is-open .curtain-marquee { opacity: 0; }
+
+/* ===================== FILM-LEADER COUNTDOWN ===================== */
+.countdown {
+  position: absolute; inset: 0; z-index: 12; display: grid; place-items: center;
+  background: radial-gradient(60% 60% at 50% 50%, #1b1b1b, #000);
+  transition: opacity .4s ease;
+}
+.countdown.is-done { opacity: 0; pointer-events: none; }
+.leader { position: relative; width: min(58%, 320px); aspect-ratio: 1; }
+.leader__ring { position: absolute; inset: 0; border-radius: 50%;
+  border: 3px solid rgba(255,255,255,.5); }
+.leader__cross::before, .leader__cross::after {
+  content: ""; position: absolute; background: rgba(255,255,255,.35);
+}
+.leader__cross::before { left: 50%; top: 0; bottom: 0; width: 2px; transform: translateX(-1px); }
+.leader__cross::after  { top: 50%; left: 0; right: 0; height: 2px; transform: translateY(-1px); }
+/* sweeping hand */
+.leader__sweep {
+  position: absolute; left: 50%; top: 50%; width: 50%; height: 3px;
+  background: linear-gradient(90deg, rgba(255,255,255,.9), transparent);
+  transform-origin: 0 50%;
+  animation: sweep 1s linear infinite;
+}
+@keyframes sweep { from { transform: rotate(-90deg); } to { transform: rotate(270deg); } }
+.leader__num {
+  position: absolute; inset: 0; display: grid; place-items: center;
+  font-family: var(--ff-display); font-size: clamp(80px, 20vw, 150px);
+  color: #f4f0e6; text-shadow: 0 0 30px rgba(0,0,0,.8);
+}
+.countdown .fx-grain { opacity: .28; }
+
+/* ===================== THEATER CONTROL BAR ===================== */
+.theater__bar {
+  position: relative; z-index: 20;
+  display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+  padding: 12px clamp(12px, 3vw, 28px);
+  padding-bottom: calc(12px + env(safe-area-inset-bottom));
+  background: linear-gradient(0deg, var(--velvet-900), rgba(36,7,7,.85));
+  border-top: 2px solid var(--gold-600);
+}
+.theater__title {
+  font-family: var(--ff-marquee); font-weight: 700; letter-spacing: .06em;
+  color: var(--gold-300); font-size: 15px; margin-right: auto;
+  max-width: 40vw; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.tctl {
+  display: inline-flex; align-items: center; gap: 6px;
+  color: var(--gold-300); background: rgba(0,0,0,.35);
+  border: 1px solid var(--gold-600); border-radius: 999px;
+  padding: 9px 14px; font-family: var(--ff-marquee); font-weight: 700;
+  font-size: 12px; letter-spacing: .1em;
+}
+.tctl:hover { background: rgba(0,0,0,.55); color: var(--gold-300); }
+.tsel {
+  color: var(--gold-300); background: var(--velvet-900);
+  border: 1px solid var(--gold-600); border-radius: 999px;
+  padding: 8px 12px; font-family: var(--ff-marquee); font-weight: 700;
+  font-size: 12px; letter-spacing: .06em; max-width: 46vw;
+}
+
+/* themed status inside the screen (loading / jammed reel) */
+.screen__status {
+  position: absolute; inset: 0; z-index: 14; display: grid; place-items: center;
+  text-align: center; padding: 20px; background: rgba(6,1,1,.82);
+}
+.reel { width: 66px; height: 66px; border-radius: 50%; margin: 0 auto 14px;
+  border: 4px solid var(--gold-600); border-top-color: var(--gold-300);
+  animation: spin 1s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.screen__status .state__title { color: var(--gold-300); }
+.screen__status .muted { max-width: 40ch; margin: 6px auto 14px; }
+
+/* ===================== EFFECTS LEVELS ===================== */
+/* LITE — keep the vibe, drop the churn */
+body[data-effects="lite"] .fx-grain { animation: none; opacity: .1; }
+body[data-effects="lite"] .fx-flicker,
+body[data-effects="lite"] .fx-dust { display: none; }
+body[data-effects="lite"] .curtain { transition-duration: 1s; }
+
+/* OFF — no overlays, curtains snap, countdown skipped by JS */
+body[data-effects="off"] .fx-grain,
+body[data-effects="off"] .fx-flicker,
+body[data-effects="off"] .fx-dust,
+body[data-effects="off"] .fx-vignette,
+body[data-effects="off"] .theater__seats { display: none; }
+body[data-effects="off"] .curtain { transition: none; }
+
+/* Respect the OS setting regardless of toggle */
+@media (prefers-reduced-motion: reduce) {
+  .fx-grain, .fx-flicker, .fx-dust, .leader__sweep, .skeleton::after { animation: none !important; }
+  .curtain { transition-duration: .001s; }
+  .poster { transition: none; }
+}

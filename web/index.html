@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#1a0505" />
+  <meta name="color-scheme" content="dark" />
+  <title>Velvet Cinema</title>
+  <meta name="description" content="A retro Y2K velvet-cinema streaming theater. Browse movies & TV and watch with the lights down low." />
+
+  <!-- Inline film-reel favicon (no extra request) -->
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='16' fill='%231a0505'/%3E%3Cg fill='none' stroke='%23d4af37' stroke-width='2'%3E%3Ccircle cx='16' cy='16' r='9'/%3E%3Ccircle cx='16' cy='16' r='2.4'/%3E%3C/g%3E%3Cg fill='%23d4af37'%3E%3Ccircle cx='16' cy='9' r='1.7'/%3E%3Ccircle cx='21' cy='13' r='1.7'/%3E%3Ccircle cx='19' cy='20' r='1.7'/%3E%3Ccircle cx='13' cy='20' r='1.7'/%3E%3Ccircle cx='11' cy='13' r='1.7'/%3E%3C/g%3E%3C/svg%3E" />
+
+  <!-- Preload the marquee display font (used above the fold) -->
+  <link rel="preload" href="assets/fonts/limelight-latin.woff2" as="font" type="font/woff2" crossorigin />
+
+  <link rel="stylesheet" href="assets/css/velvet.css" />
+  <link rel="stylesheet" href="assets/css/effects.css" />
+  <link rel="stylesheet" href="assets/css/responsive.css" />
+</head>
+<body data-effects="full">
+
+  <!-- Top marquee bulb strip -->
+  <div class="bulb-strip bulb-strip--top" aria-hidden="true"></div>
+
+  <!-- ===================== HEADER / MARQUEE ===================== -->
+  <header class="site-header" id="siteHeader">
+    <div class="valance" aria-hidden="true"></div>
+    <div class="header-inner">
+      <a class="brand" href="#/" aria-label="Velvet Cinema home">
+        <span class="brand__name" id="brandName">VELVET</span>
+        <span class="brand__tag" id="brandTag">· CINEMA ·</span>
+      </a>
+
+      <form class="search" id="searchForm" role="search">
+        <input class="search__input" id="searchInput" type="search"
+               placeholder="Search films &amp; shows…" autocomplete="off"
+               aria-label="Search movies and TV shows" />
+        <button class="search__btn" type="submit" aria-label="Search">
+          <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="currentColor" d="M10 2a8 8 0 1 0 4.9 14.32l5.39 5.39 1.42-1.42-5.39-5.39A8 8 0 0 0 10 2m0 2a6 6 0 1 1 0 12 6 6 0 0 1 0-12"/></svg>
+        </button>
+      </form>
+
+      <div class="header-actions">
+        <button class="fx-toggle" id="fxToggle" type="button"
+                title="Cinema effects" aria-label="Cinema effects: full">
+          <span class="fx-toggle__icon" aria-hidden="true">✷</span>
+          <span class="fx-toggle__label" id="fxLabel">FULL</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ===================== ROUTED VIEW ===================== -->
+  <main id="view" class="view" tabindex="-1"></main>
+
+  <!-- ===================== FOOTER ===================== -->
+  <footer class="site-footer" id="siteFooter">
+    <div class="bulb-strip bulb-strip--bottom" aria-hidden="true"></div>
+    <p class="footer-line">
+      <span class="footer-mark">✦</span>
+      NOW SHOWING · self-hosted with
+      <a href="https://github.com/cinepro-org/core" target="_blank" rel="noopener">CinePro</a>
+      &amp; <a href="https://www.themoviedb.org/" target="_blank" rel="noopener">TMDB</a>
+      <span class="footer-mark">✦</span>
+    </p>
+    <p class="footer-fine" id="footerMode"></p>
+  </footer>
+
+  <!-- Toast host -->
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <!-- ===================== SCRIPTS ===================== -->
+  <script src="config.js"></script>
+  <script src="assets/vendor/hls.min.js"></script>
+  <script src="assets/js/mock/fixtures.js"></script>
+  <script src="assets/js/ui.js"></script>
+  <script src="assets/js/tmdb.js"></script>
+  <script src="assets/js/cinepro.js"></script>
+  <script src="assets/js/player.js"></script>
+  <script src="assets/js/theater.js"></script>
+  <script src="assets/js/app.js"></script>
+</body>
+</html>
