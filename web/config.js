@@ -14,7 +14,7 @@ window.CINE_CONFIG = {
    *     anyone who opens the page source. That is expected for this setup.
    *     If that matters to you, restrict the key or put a proxy in front.
    * ------------------------------------------------------------------------*/
-  TMDB_API_KEY: "",
+  TMDB_API_KEY: "b5a665e3a448a789570fe3f0e2df595b",
 
   /* --------------------------------------------------------------------------
    *  2) CinePro Core — the streaming backend (folder /cinepro in this repo).
@@ -29,7 +29,7 @@ window.CINE_CONFIG = {
    *     and a public test stream, WITHOUT a TMDB key or a running CinePro.
    *     Great for previewing the look & feel. Set false for the real thing.
    * ------------------------------------------------------------------------*/
-  MOCK: true,
+  MOCK: false,
 
   /* --------------------------------------------------------------------------
    *  Cosmetic / advanced (safe to leave as-is)
